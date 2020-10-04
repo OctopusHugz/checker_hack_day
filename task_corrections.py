@@ -4,6 +4,7 @@ from sys import argv
 from settings import auth_token
 import requests
 import time
+from colorama import Fore, Style
 checks_dict = {}
 payload = {'Content-Type': 'application/json'}
 
@@ -32,6 +33,8 @@ def request_correction():
             if not correction_res_id:
                 print('Too many requests...Please respect the rate limits!')
                 exit(1)
+            print("Waiting on correction result for task: {}. {}".format(
+                task_position, task.get('title')))
             correction_result_url = 'https://intranet.hbtn.io/correction_requests/{:d}.json?auth_token={}'.format(
                 correction_res_id, auth_token)
             update_checks_dict(correction_result_url, task, task_id,
@@ -43,8 +46,6 @@ def update_checks_dict(correction_result_url, task, task_id, task_position):
     req_dict = {}
     code_dict = {}
     count = 0
-    print("Waiting on correction result for task: {}. {}".format(
-        task_position, task.get('title')))
     correction_result = requests.get(
         correction_result_url, params=payload).json()
     status = correction_result.get('status')
@@ -67,7 +68,18 @@ def update_checks_dict(correction_result_url, task, task_id, task_position):
                 {label + '_' + title.lower().replace(' ', '_'): passed})
         check_dict.update({label + '_check ' + str(count): passed})
         count += 1
-    print(
-        'Requirement Checks: {:d}/{:d}'.format(list(req_dict.values()).count(True), len(req_dict)))
-    print(
-        'Code Checks: {:d}/{:d}'.format(list(code_dict.values()).count(True), len(code_dict)))
+    req_dict_passed = list(req_dict.values()).count(True)
+    code_dict_passed = list(code_dict.values()).count(True)
+    if req_dict_passed == len(req_dict):
+        req_color = Fore.GREEN
+    else:
+        req_color = Fore.RED
+    if code_dict_passed == len(code_dict):
+        code_color = Fore.GREEN
+    else:
+        code_color = Fore.RED
+    print(req_color +
+          'Requirement Checks: {:d}/{:d}'.format(req_dict_passed, len(req_dict)))
+    print(code_color +
+          'Code Checks: {:d}/{:d}'.format(code_dict_passed, len(code_dict)))
+    print(Style.RESET_ALL, end='')
