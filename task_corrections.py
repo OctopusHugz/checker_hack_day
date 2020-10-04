@@ -14,6 +14,9 @@ def request_correction():
                                                                                 auth_token)
     project = requests.get(task_url, params=payload).json()
     tasks = project.get('tasks')
+    if not tasks:
+        print('Something went wrong...Please try again')
+        exit(1)
     for task in tasks:
         task_id = task.get('id')
         task_file = task.get('github_file')
@@ -23,18 +26,18 @@ def request_correction():
             correction_res_id = requests.post(
                 correction_url, params=payload).json().get('id')
             if not correction_res_id:
-                print('Too many requests...please respect the rate limits!')
+                print('Too many requests...Please respect the rate limits!')
                 exit(1)
-            # correction_result_url = 'https://intranet.hbtn.io/correction_requests/{:d}.json?auth_token={}'.format(
-            #     correction_res_id, auth_token)
-            correction_result_url = 'https://intranet.hbtn.io/correction_requests/3592580.json?auth_token={}'.format(
-                auth_token)
+            correction_result_url = 'https://intranet.hbtn.io/correction_requests/{:d}.json?auth_token={}'.format(
+                correction_res_id, auth_token)
+            # correction_result_url = 'https://intranet.hbtn.io/correction_requests/3592580.json?auth_token={}'.format(
+            #     auth_token)
             update_checks_dict(correction_result_url, task_id)
     print(checks_dict)
 
 
 def update_checks_dict(correction_result_url, task_id):
-    print("Waiting on correction result...")
+    print("Waiting on correction result for task: {}...".format(task_id))
     correction_result = requests.get(
         correction_result_url, params=payload).json()
     checks = correction_result.get('result_display').get('checks')

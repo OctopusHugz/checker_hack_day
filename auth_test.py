@@ -9,11 +9,14 @@ def settings_auth_test():
     if not path.exists('/home/vagrant/utils/checker_hack_day/settings.py'):
         create_settings_file()
     authorized = check_auth()
-    if not authorized:
+    if authorized:
+        return True
+    else:
         print('Unauthorized request. Getting new auth_token now...')
         auth_token = get_auth()
         create_settings_file(auth_token)
         print('New auth_token stored successfully!')
+        return False
 
 
 def check_auth():
