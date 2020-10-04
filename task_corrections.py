@@ -4,9 +4,10 @@ from sys import argv
 from settings import auth_token
 import requests
 import time
-from colorama import Fore, Style
+from colorama import Fore, init
 checks_dict = {}
 payload = {'Content-Type': 'application/json'}
+init(autoreset=True)
 
 
 def request_correction():
@@ -33,7 +34,7 @@ def request_correction():
             if not correction_res_id:
                 print('Too many requests...Please respect the rate limits!')
                 exit(1)
-            print("Waiting on correction result for task: {}. {}".format(
+            print("Waiting on correction result for task: " + Fore.BLUE + "{}. {}".format(
                 task_position, task.get('title')))
             correction_result_url = 'https://intranet.hbtn.io/correction_requests/{:d}.json?auth_token={}'.format(
                 correction_res_id, auth_token)
@@ -82,4 +83,3 @@ def update_checks_dict(correction_result_url, task, task_id, task_position):
           'Requirement Checks: {:d}/{:d}'.format(req_dict_passed, len(req_dict)))
     print(code_color +
           'Code Checks: {:d}/{:d}'.format(code_dict_passed, len(code_dict)))
-    print(Style.RESET_ALL, end='')
