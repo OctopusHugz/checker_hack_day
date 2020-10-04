@@ -3,6 +3,7 @@ from cwd import pid_from_cwd
 from sys import argv
 from settings import auth_token
 import requests
+import time
 checks_dict = {}
 payload = {'Content-Type': 'application/json'}
 
@@ -20,6 +21,9 @@ def request_correction():
     for task in tasks:
         task_id = task.get('id')
         task_file = task.get('github_file')
+        task_position = task.get('position')
+        if task_position < 100:
+            task_position -= 1
         if task_file in argv:
             correction_url = 'https://intranet.hbtn.io/tasks/{}/start_correction.json?auth_token={}'.format(
                 task_id, auth_token)
@@ -30,15 +34,40 @@ def request_correction():
                 exit(1)
             correction_result_url = 'https://intranet.hbtn.io/correction_requests/{:d}.json?auth_token={}'.format(
                 correction_res_id, auth_token)
-            # correction_result_url = 'https://intranet.hbtn.io/correction_requests/3592580.json?auth_token={}'.format(
-            #     auth_token)
-            update_checks_dict(correction_result_url, task_id)
-    print(checks_dict)
+            update_checks_dict(correction_result_url, task, task_id,
+                               task_position)
 
 
-def update_checks_dict(correction_result_url, task_id):
-    print("Waiting on correction result for task: {}...".format(task_id))
+def update_checks_dict(correction_result_url, task, task_id, task_position):
+    check_dict = {}
+    req_dict = {}
+    code_dict = {}
+    count = 0
+    print("Waiting on correction result for task: {}. {}".format(
+        task_position, task.get('title')))
     correction_result = requests.get(
         correction_result_url, params=payload).json()
+    status = correction_result.get('status')
+    while status == 'Sent':
+        time.sleep(2.5)
+        correction_result = requests.get(
+            correction_result_url, params=payload).json()
+        status = correction_result.get('status')
     checks = correction_result.get('result_display').get('checks')
     checks_dict.update({task_id: checks})
+    for check in checks:
+        label = check.get('check_label')
+        passed = check.get('passed')
+        title = check.get('title')
+        if label == 'requirement':
+            req_dict.update(
+                {label + '_' + title.lower().replace(' ', '_'): passed})
+        else:
+            code_dict.update(
+                {label + '_' + title.lower().replace(' ', '_'): passed})
+        check_dict.update({label + '_check ' + str(count): passed})
+        count += 1
+    print(
+        'Requirement Checks: {:d}/{:d}'.format(list(req_dict.values()).count(True), len(req_dict)))
+    print(
+        'Code Checks: {:d}/{:d}'.format(list(code_dict.values()).count(True), len(code_dict)))
