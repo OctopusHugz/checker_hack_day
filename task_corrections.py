@@ -21,45 +21,39 @@ def request_correction():
         print('Something went wrong...Please try again')
         exit(1)
     task_list = []
+    task_files = []
     for task in tasks:
+        task_list.append(task)
+        task_files.append(task.get('github_file'))
+    if len(argv) > 1:
+        for filename in argv[1:]:
+            if filename not in task_files:
+                print(Fore.RED + 'You have an invalid filename. Exiting...')
+                exit(1)
+    for task in task_list:
         task_id = task.get('id')
+        task_title = task.get('title')
         task_file = task.get('github_file')
         task_position = task.get('position')
         if task_position < 100:
             task_position -= 1
-        task_list.append(task)
-        if task_file in argv:
-            correction_url = 'https://intranet.hbtn.io/tasks/{}/start_correction.json?auth_token={}'.format(
-                task_id, auth_token)
-            correction_res_id = requests.post(
-                correction_url, params=payload).json().get('id')
-            if not correction_res_id:
-                print('Too many requests...Please respect the rate limits!')
-                exit(1)
-            print("Waiting on correction result for task: " + Fore.BLUE + "{}. {}".format(
-                task_position, task.get('title')))
-            correction_result_url = 'https://intranet.hbtn.io/correction_requests/{:d}.json?auth_token={}'.format(
-                correction_res_id, auth_token)
-            update_checks_dict(correction_result_url, task_id)
-    if len(argv) == 1:
-        for task in task_list:
-            task_id = task.get('id')
-            task_file = task.get('github_file')
-            task_position = task.get('position')
-            if task_position < 100:
-                task_position -= 1
-            correction_url = 'https://intranet.hbtn.io/tasks/{}/start_correction.json?auth_token={}'.format(
-                task_id, auth_token)
-            correction_res_id = requests.post(
-                correction_url, params=payload).json().get('id')
-            if not correction_res_id:
-                print('Too many requests...Please respect the rate limits!')
-                exit(1)
-            print("Waiting on correction result for task: " + Fore.BLUE + "{}. {}".format(
-                task_position, task.get('title')))
-            correction_result_url = 'https://intranet.hbtn.io/correction_requests/{:d}.json?auth_token={}'.format(
-                correction_res_id, auth_token)
-            update_checks_dict(correction_result_url, task_id)
+        if (len(argv) > 1 and task_file in argv) or len(argv) == 1:
+            correct_task(task_id, task_title, task_position)
+
+
+def correct_task(task_id, task_title, task_position):
+    correction_url = 'https://intranet.hbtn.io/tasks/{}/start_correction.json?auth_token={}'.format(
+        task_id, auth_token)
+    correction_res_id = requests.post(
+        correction_url, params=payload).json().get('id')
+    if not correction_res_id:
+        print('Too many requests...Please respect the rate limits!')
+        exit(1)
+    print("Waiting on correction result for task: " + Fore.BLUE + "{}. {}".format(
+        task_position, task_title))
+    correction_result_url = 'https://intranet.hbtn.io/correction_requests/{:d}.json?auth_token={}'.format(
+        correction_res_id, auth_token)
+    update_checks_dict(correction_result_url, task_id)
 
 
 def update_checks_dict(correction_result_url, task_id):
