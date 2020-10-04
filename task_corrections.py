@@ -20,12 +20,14 @@ def request_correction():
     if not tasks:
         print('Something went wrong...Please try again')
         exit(1)
+    task_list = []
     for task in tasks:
         task_id = task.get('id')
         task_file = task.get('github_file')
         task_position = task.get('position')
         if task_position < 100:
             task_position -= 1
+        task_list.append(task)
         if task_file in argv:
             correction_url = 'https://intranet.hbtn.io/tasks/{}/start_correction.json?auth_token={}'.format(
                 task_id, auth_token)
@@ -38,11 +40,29 @@ def request_correction():
                 task_position, task.get('title')))
             correction_result_url = 'https://intranet.hbtn.io/correction_requests/{:d}.json?auth_token={}'.format(
                 correction_res_id, auth_token)
-            update_checks_dict(correction_result_url, task, task_id,
-                               task_position)
+            update_checks_dict(correction_result_url, task_id)
+    if len(argv) == 1:
+        for task in task_list:
+            task_id = task.get('id')
+            task_file = task.get('github_file')
+            task_position = task.get('position')
+            if task_position < 100:
+                task_position -= 1
+            correction_url = 'https://intranet.hbtn.io/tasks/{}/start_correction.json?auth_token={}'.format(
+                task_id, auth_token)
+            correction_res_id = requests.post(
+                correction_url, params=payload).json().get('id')
+            if not correction_res_id:
+                print('Too many requests...Please respect the rate limits!')
+                exit(1)
+            print("Waiting on correction result for task: " + Fore.BLUE + "{}. {}".format(
+                task_position, task.get('title')))
+            correction_result_url = 'https://intranet.hbtn.io/correction_requests/{:d}.json?auth_token={}'.format(
+                correction_res_id, auth_token)
+            update_checks_dict(correction_result_url, task_id)
 
 
-def update_checks_dict(correction_result_url, task, task_id, task_position):
+def update_checks_dict(correction_result_url, task_id):
     check_dict = {}
     req_dict = {}
     code_dict = {}
