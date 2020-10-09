@@ -23,19 +23,25 @@ def request_correction():
     task_list = []
     task_files = []
     for task in tasks:
-        task_list.append(task)
+        if task.get('checker_available'):
+            task_list.append(task)
         task_files.append(task.get('github_file'))
     if len(argv) > 1:
         for filename in argv[1:]:
             if filename not in task_files:
                 print(Fore.RED + 'You have an invalid filename. Exiting...')
                 exit(1)
+    if len(task_list) == 0:
+        print(
+            Fore.RED + 'This task has no checker. Please find a peer for a manual review!')
+        exit(1)
+    # See behavior with 0x15 JS Web Query, giving 3-js and 3.html results in different output
     for task in task_list:
         task_id = task.get('id')
         task_title = task.get('title')
         task_file = task.get('github_file')
         task_position = task.get('position')
-        if task_position < 100:
+        if task_position < 100 and task_list[0].get('position') != 0:
             task_position -= 1
         if (len(argv) > 1 and task_file in argv) or len(argv) == 1:
             correct_task(task_id, task_title, task_position)
