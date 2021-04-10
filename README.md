@@ -6,9 +6,9 @@ This is a personal side project spawned from the Checker Hack Day on October 2, 
 
 1. Clone the directory to wherever you want to store this program
 
-2. Run `./setup.py`
+2. Run `./setup.py` from that directory
 
-3. Then, work in your project directory as normal. From there, you have 2 options:
+3. Then, work in your project directories as normal. From there, you have 2 options:
 
    - `ct`
 
