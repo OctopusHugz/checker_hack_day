@@ -17,4 +17,4 @@ This is a personal side project spawned from the Checker Hack Day on October 2, 
    - `ct filename`
 
      - This will check only the task specified by filename
-       - This will sometimes break! If you find projects where this happens, please report them! I can't possibly check all edge cases.
+       - This will sometimes break! If you find projects where this happens, please report them!
