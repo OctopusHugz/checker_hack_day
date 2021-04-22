@@ -14,7 +14,12 @@ This is a personal side project spawned from the Checker Hack Day on October 2, 
 
      - This will check all tasks in the project
 
-   - `ct filename`
+   - `ct task_number`
 
-     - This will check only the task specified by filename
-       - This will sometimes break! If you find projects where this happens, please report them!
+     - This will check only the task specified by task_number
+       - This may sometimes break! If you find projects where this happens, please report it so it can be fixed!
+
+# Upcoming Features
+
+1. Functionality to pass a range of tasks (like 0-3, for example)
+   - For now, running `ct` and then stopping with `CTRL-C` is the best workaround!
