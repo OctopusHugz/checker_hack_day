@@ -98,7 +98,8 @@ web_back_end_list = [{574: "0x00-python_variable_annotations"},
                      {610: "0x09-Unittests_and_integration_tests"},
                      {631: "0x0A-i18n"},
                      {630: "0x0B_redis_basic"},
-                     {632: "0x0C-MySQL_Advanced"}]
+                     {632: "0x0C-MySQL_Advanced"},
+                     {411: "0x0D-NoSQL"}]
 interview_list = [{498: "0x00-lockboxes"},
                   {439: "0x01-insert_in_sorted_linked_list"},
                   {465: "0x02-heap_insert"},
@@ -117,4 +118,5 @@ interview_list = [{498: "0x00-lockboxes"},
                   {470: "0x0F-starwars_api"},
                   {508: "0x10-rain"},
                   {462: "0x11-heap_sort"},
-                  {464: "0x12-advanced_binary_search"}]
+                  {464: "0x12-advanced_binary_search"},
+                  {476: "0x13-count_it"}]
