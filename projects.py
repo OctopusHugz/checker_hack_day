@@ -99,7 +99,8 @@ web_back_end_list = [{574: "0x00-python_variable_annotations"},
                      {631: "0x0A-i18n"},
                      {630: "0x0B_redis_basic"},
                      {632: "0x0C-MySQL_Advanced"},
-                     {411: "0x0D-NoSQL"}]
+                     {411: "0x0D-NoSQL"},
+                     {577: "0x0E-ES6_basic"}]
 interview_list = [{498: "0x00-lockboxes"},
                   {439: "0x01-insert_in_sorted_linked_list"},
                   {465: "0x02-heap_insert"},
