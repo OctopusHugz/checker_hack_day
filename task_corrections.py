@@ -5,6 +5,8 @@ from settings import auth_token
 from time import sleep
 import requests
 from colorama import Fore, init
+r_url = 'https://intranet.hbtn.io'
+auth_url = f'.json?auth_token={auth_token}'
 checks_dict = {}
 payload = {'Content-Type': 'application/json'}
 init(autoreset=True)
@@ -13,14 +15,13 @@ init(autoreset=True)
 def request_correction():
     """Requests a correction given a task ID"""
     if len(argv) > 2:
-        print(Fore.RED + "Try running with no arguments, or a single task number!")
+        print(Fore.RED + "Try running with no arguments, or a single task!")
         exit(1)
     project_id = pid_from_cwd()
     if project_id is None:
-        print(Fore.RED + "Whoops! No checker for you today. Try a manual review instead!")
+        print(Fore.RED + "Whoops! No checker, try a manual review instead!")
         exit(1)
-    task_url = 'https://intranet.hbtn.io/projects/{}.json?auth_token={}'.format(project_id,
-                                                                                auth_token)
+    task_url = f'{r_url}/projects/{project_id}{auth_url}'
     project = requests.get(task_url, params=payload).json()
     tasks = project.get('tasks')
     if not tasks:
@@ -42,7 +43,7 @@ def request_correction():
     checker_available_list = [task.get("checker_available") for task in tasks]
     if True not in checker_available_list:
         print(
-            Fore.RED + 'This project has no checker. Please find a peer for a manual review!')
+            Fore.RED + 'This project has no checker! Manual review needed!')
         exit(1)
 
     if task_list[0].get('position') != 0:
@@ -50,16 +51,12 @@ def request_correction():
 
     if one_arg_given:
         if checker_available_list[task_number]:
-            # try:
             correct_task(task_list[task_number].get("id"),
                          task_list[task_number].get("title"),
                          task_number)
-            # except Exception:
-            #     print(
-            #         Fore.RED + "Looks like this task has no checker! Please find a peer for a manual review!")
         else:
             print(
-                Fore.RED + "Looks like this task has no checker! Please find a peer for a manual review!")
+                Fore.RED + "This task has no checker! Manual review needed!")
 
     for task in task_list:
         task_id = task.get('id')
@@ -72,37 +69,32 @@ def request_correction():
 
 
 def correct_task(task_id, task_title, task_position):
-    correction_url = 'https://intranet.hbtn.io/tasks/{}/start_correction.json?auth_token={}'.format(
-        task_id, auth_token)
-    correction_res_id = requests.post(
-        correction_url, params=payload).json().get('id')
-    if not correction_res_id:
+    cor_url = f'{r_url}/tasks/{task_id}/start_correction{auth_url}'
+    cor_res_id = requests.post(cor_url, params=payload).json().get('id')
+    if not cor_res_id:
         # or could be manual review?!
         # breaking when running ct only and manual review in middle of autos?
         print('Too many requests...Please respect the rate limits!')
         exit(1)
-    print("Waiting on correction result for task: " + Fore.BLUE + "{}. {}".format(
-        task_position, task_title))
-    correction_result_url = 'https://intranet.hbtn.io/correction_requests/{:d}.json?auth_token={}'.format(
-        correction_res_id, auth_token)
-    update_checks_dict(correction_result_url, task_id)
+    print("Waiting on correction result for task: " +
+          Fore.BLUE + f"{task_position}. {task_title}")
+    cor_res_url = f'{r_url}/correction_requests/{cor_res_id}{auth_url}'
+    update_checks_dict(cor_res_url, task_id)
 
 
-def update_checks_dict(correction_result_url, task_id):
+def update_checks_dict(cor_res_url, task_id):
     check_dict = {}
     req_dict = {}
     code_dict = {}
     count = 0
-    correction_result = requests.get(
-        correction_result_url, params=payload).json()
-    status = correction_result.get('status')
+    cor_res = requests.get(cor_res_url, params=payload).json()
+    status = cor_res.get('status')
     while status == 'Sent':
         # turn this sleep into async/await or something more robust?
         sleep(2)
-        correction_result = requests.get(
-            correction_result_url, params=payload).json()
-        status = correction_result.get('status')
-    checks = correction_result.get('result_display').get('checks')
+        cor_res = requests.get(cor_res_url, params=payload).json()
+        status = cor_res.get('status')
+    checks = cor_res.get('result_display').get('checks')
     checks_dict.update({task_id: checks})
     for check in checks:
         label = check.get('check_label')
