@@ -116,7 +116,8 @@ web_back_end_list = [
     {577: "0x0E-ES6_basic"},
     {578: "0x0F-ES6_promise"},
     {579: "0x10-ES6_classes"},
-    {580: "0x11-ES6_data_manipulation"}
+    {580: "0x11-ES6_data_manipulation"},
+    {615: "0x12-Node_JS_basic"}
 ]
 
 interview_list = [
