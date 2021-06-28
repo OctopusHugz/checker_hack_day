@@ -21,13 +21,15 @@ def setup_func():
         settings_path = check_task_dir + "/settings.py"
     finally:
         with open(settings_path, 'w+') as f:
-            f.write('#!/usr/bin/env python3\n')
-            f.write(f'check_task_dir = "{check_task_dir}"\n')
-            f.write(f'settings_path = "{settings_path}"\n')
-            f.write(f'email = "{email}"\n')
-            f.write(f'pwd = "{pwd}"\n')
-            f.write(f'api_key = "{api_key}"\n')
-            f.write(f'auth_token = "{auth_token}"\n')
+            f.writelines([
+                '#!/usr/bin/env python3\n',
+                f'check_task_dir = "{check_task_dir}"\n',
+                f'settings_path = "{settings_path}"\n',
+                f'email = "{email}"\n',
+                f'pwd = "{pwd}"\n',
+                f'api_key = "{api_key}"\n',
+                f'auth_token = "{auth_token}"\n'
+            ])
         home = getenv("HOME")
         need_to_write_alias = 1
         with open(f'{home}/.bashrc', "r+") as f:
@@ -37,8 +39,10 @@ def setup_func():
                 need_to_write_alias = 0
         if need_to_write_alias:
             with open(f'{home}/.bashrc', "a") as f:
-                f.write("\n# check_task aliases\n")
-                f.write(f'alias ct="{check_task_dir}/check_task.py"\n')
+                f.writelines([
+                    "\n# check_task aliases\n",
+                    f'alias ct="{check_task_dir}/check_task.py"\n'
+                ])
 
 
 if __name__ == "__main__":
