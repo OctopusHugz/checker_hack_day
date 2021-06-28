@@ -6,3 +6,6 @@ if __name__ == "__main__":
     if authorized:
         from task_corrections import request_correction
         request_correction()
+    else:
+        print('Ensure ./settings.py contains correct values and try again!')
+        exit(1)
