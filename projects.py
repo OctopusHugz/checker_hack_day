@@ -117,7 +117,8 @@ web_back_end_list = [
     {578: "0x0F-ES6_promise"},
     {579: "0x10-ES6_classes"},
     {580: "0x11-ES6_data_manipulation"},
-    {615: "0x12-Node_JS_basic"}
+    {615: "0x12-Node_JS_basic"},
+    {614: "0x13-unittests_in_js"},
 ]
 
 interview_list = [
@@ -142,5 +143,14 @@ interview_list = [
     {464: "0x12-advanced_binary_search"},
     {476: "0x13-count_it"},
     {466: "0x14-heap_extract"},
-    {468: "0x15-infinite_multiplication"}
+    {468: "0x15-infinite_multiplication"},
+    {503: "0x16-rotate_2d_matrix"},
+    {472: "0x17-find_the_loop"},
+    {482: "0x18-merge_sort"},
+    {492: "0x19-making_change"},
+]
+
+web_react_list = [
+    {589: "0x00-TypeScript"},
+    {581: "0x01-Webpack"},
 ]
