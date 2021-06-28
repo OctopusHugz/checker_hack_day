@@ -72,8 +72,6 @@ def correct_task(task_id, task_title, task_position):
     cor_url = f'{r_url}/tasks/{task_id}/start_correction{auth_url}'
     cor_res_id = requests.post(cor_url, params=payload).json().get('id')
     if not cor_res_id:
-        # or could be manual review?!
-        # breaking when running ct only and manual review in middle of autos?
         print('Too many requests...Please respect the rate limits!')
         exit(1)
     print("Waiting on correction result for task: " +
@@ -90,7 +88,6 @@ def update_checks_dict(cor_res_url, task_id):
     cor_res = requests.get(cor_res_url, params=payload).json()
     status = cor_res.get('status')
     while status == 'Sent':
-        # turn this sleep into async/await or something more robust?
         sleep(2)
         cor_res = requests.get(cor_res_url, params=payload).json()
         status = cor_res.get('status')
