@@ -33,8 +33,7 @@ def check_auth():
     except Exception:
         return 0
     payload = {'Content-Type': 'application/json'}
-    url = 'https://intranet.hbtn.io/users/me.json?auth_token={}'.format(
-        auth_token)
+    url = f'https://intranet.hbtn.io/users/me.json?auth_token={auth_token}'
     response = requests.get(url, params=payload)
     if response.status_code != 200:
         return 0
