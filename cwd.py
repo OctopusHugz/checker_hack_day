@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 from os import getcwd, path
 from projects import (low_list, high_list, sedo_list,
-                      interview_list, web_front_end_list, web_back_end_list)
+                      interview_list, web_front_end_list, web_back_end_list,
+                      web_react_list)
 
 
 def pid_from_cwd():
@@ -13,7 +14,8 @@ def pid_from_cwd():
         "sedo": sedo_list,
         "interview": interview_list,
         "web_front_end": web_front_end_list,
-        "web_back_end": web_back_end_list
+        "web_back_end": web_back_end_list,
+        "web_react": web_react_list
     }
     all_projects = list(projects.values())
     # all projects is list of list of dicts where each dict is a project
