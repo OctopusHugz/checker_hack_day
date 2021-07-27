@@ -153,4 +153,5 @@ interview_list = [
 web_react_list = [
     {589: "0x00-TypeScript"},
     {581: "0x01-Webpack"},
+    {608: "0x07-React_Immutable"},
 ]
